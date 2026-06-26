@@ -1,0 +1,6 @@
+{
+  "name": "NEXUS AI",
+  "description": "The AI Business Launch Intelligence Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
