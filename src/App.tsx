@@ -86,7 +86,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans antialiased">
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased transition-colors duration-300">
       {screen === "landing" && (
         <LandingPage 
           onStart={handleStart} 

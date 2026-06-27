@@ -34,20 +34,20 @@ export default function ScenarioSimulator({ dna }: { dna: BusinessDNA }) {
     <div className="animate-fade-in max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-zinc-50 mb-2">Scenario Simulator</h2>
-          <p className="text-zinc-400 text-sm">"What-if" tahlillari va turli biznes ssenariylarini tekshirish</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Scenario Simulator</h2>
+          <p className="text-muted-foreground text-sm">"What-if" tahlillari va turli biznes ssenariylarini tekshirish</p>
         </div>
       </div>
 
-      <Card className="bg-zinc-950 border-zinc-800 shadow-xl p-0">
+      <Card className="bg-background border-border shadow-xl p-0">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-6">
              <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
                <FlaskConical className="w-5 h-5 text-purple-500" />
              </div>
              <div>
-               <h3 className="font-bold text-zinc-50">Ssenariy kiritish</h3>
-               <p className="text-xs text-zinc-500">O'zgartirish kiritib natijani prognoz qiling.</p>
+               <h3 className="font-bold text-foreground">Ssenariy kiritish</h3>
+               <p className="text-xs text-muted-foreground">O'zgartirish kiritib natijani prognoz qiling.</p>
              </div>
           </div>
 
@@ -56,7 +56,7 @@ export default function ScenarioSimulator({ dna }: { dna: BusinessDNA }) {
               type="text" 
               value={scenario}
               onChange={(e) => setScenario(e.target.value)}
-              className="flex-1 bg-zinc-900/50 border-zinc-800 text-zinc-50 h-12 focus-visible:ring-purple-500"
+              className="flex-1 bg-card/50 border-border text-foreground h-12 focus-visible:ring-purple-500"
             />
             <Button 
               onClick={handleSimulate}
@@ -76,7 +76,7 @@ export default function ScenarioSimulator({ dna }: { dna: BusinessDNA }) {
                <h4 className="text-purple-400 font-bold mb-3 flex items-center gap-2">
                  <ArrowRight className="w-4 h-4" /> Natija Prognozi
                </h4>
-               <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">{result}</p>
+               <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">{result}</p>
             </div>
           )}
         </CardContent>

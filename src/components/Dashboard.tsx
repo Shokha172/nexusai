@@ -17,6 +17,7 @@ import ScenarioSimulator from "./dashboard/ScenarioSimulator";
 import Integrations from "./dashboard/Integrations";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ModeToggle } from "./ModeToggle";
 
 interface DashboardProps {
   dna: BusinessDNA;
@@ -44,23 +45,24 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans flex overflow-hidden selection:bg-emerald-500 selection:text-zinc-950">
+    <div className="min-h-screen bg-background text-foreground font-sans flex overflow-hidden selection:bg-emerald-500 selection:text-zinc-950">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col h-screen shrink-0 hidden md:flex">
+      <aside className="w-64 border-r border-border bg-background flex flex-col h-screen shrink-0 hidden md:flex">
         {/* Brand */}
-        <div className="h-16 flex items-center px-6 border-b border-zinc-800">
+        <div className="h-16 flex items-center justify-between px-6 border-b border-border">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-zinc-50 rounded flex items-center justify-center shadow-md">
-              <div className="w-2.5 h-2.5 bg-zinc-950 rounded-sm rotate-45"></div>
+            <div className="w-6 h-6 bg-foreground rounded flex items-center justify-center shadow-md">
+              <div className="w-2.5 h-2.5 bg-background rounded-sm rotate-45"></div>
             </div>
-            <span className="font-sans font-bold text-sm tracking-tight text-zinc-50">
+            <span className="font-sans font-bold text-sm tracking-tight text-foreground">
               NEXUS AI
             </span>
             <Badge variant="outline" className="text-[9px] font-mono border-emerald-900 bg-emerald-950/30 text-emerald-500 rounded uppercase ml-1">
               PRO
             </Badge>
           </div>
+          <ModeToggle />
         </div>
 
         {/* User Info */}
@@ -70,8 +72,8 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
               {userProfile.name.charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-bold text-zinc-50 truncate">{userProfile.name}</p>
-              <p className="text-xs text-zinc-500 truncate">{dna.city}</p>
+              <p className="text-sm font-bold text-foreground truncate">{userProfile.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{dna.city}</p>
             </div>
           </div>
         </div>
@@ -86,7 +88,7 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
               className={`w-full justify-start gap-3 px-3 py-6 rounded-xl text-sm transition-all duration-200 ${
                 activeTab === item.id
                   ? "bg-emerald-500/10 text-emerald-400 hover:text-emerald-400 hover:bg-emerald-500/20 font-semibold border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)]"
-                  : "text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800/50 border border-transparent"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-transparent"
               }`}
             >
               {item.icon}
@@ -96,11 +98,11 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-zinc-800">
+        <div className="p-4 border-t border-border">
           <Button
             variant="ghost"
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-mono font-bold text-zinc-500 hover:text-zinc-50 hover:bg-zinc-900 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-xs font-mono font-bold text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" /> {t.signOut}
           </Button>
@@ -108,19 +110,19 @@ export default function Dashboard({ dna, userProfile, onStartOver, onLogout, lan
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-zinc-950 relative">
+      <main className="flex-1 flex flex-col h-screen overflow-y-auto bg-background relative">
         {/* Mobile Header */}
-        <div className="md:hidden h-16 border-b border-zinc-800 flex items-center justify-between px-6 bg-zinc-950 sticky top-0 z-20">
+        <div className="md:hidden h-16 border-b border-border flex items-center justify-between px-6 bg-background sticky top-0 z-20">
            <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-zinc-50 rounded flex items-center justify-center">
-              <div className="w-2.5 h-2.5 bg-zinc-950 rounded-sm rotate-45"></div>
+            <div className="w-6 h-6 bg-foreground rounded flex items-center justify-center">
+              <div className="w-2.5 h-2.5 bg-background rounded-sm rotate-45"></div>
             </div>
-            <span className="font-sans font-bold text-sm tracking-tight text-zinc-50">NEXUS AI</span>
+            <span className="font-sans font-bold text-sm tracking-tight text-foreground">NEXUS AI</span>
           </div>
           <select 
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value)}
-            className="bg-zinc-900 border border-zinc-800 text-xs rounded px-2 py-1 outline-none text-zinc-50"
+            className="bg-card border border-border text-xs rounded px-2 py-1 outline-none text-foreground"
           >
             {navItems.map(item => (
               <option key={item.id} value={item.id}>{item.label}</option>

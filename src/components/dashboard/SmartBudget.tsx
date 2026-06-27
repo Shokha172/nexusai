@@ -27,10 +27,22 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dna, financialInputs: inputs })
       });
+      if (!response.ok) throw new Error("API failed");
       const data = await response.json();
       setResult(data);
     } catch (error) {
       console.error(error);
+      setResult({
+        profitEstimate: 5000000,
+        cashFlow: "Ijobiy (Test ma'lumoti. API Limiti tugadi)",
+        budgetAllocation: [
+          { category: "Ijara/Soliq", percentage: 30, status: "Normal" },
+          { category: "Marketing", percentage: 20, status: "Normal" }
+        ],
+        riskLevel: "O'rtacha",
+        riskReason: "API limiti tugaganligi sababli test ma'lumoti ko'rsatilmoqda.",
+        growthSuggestion: "Yangi API kalit kiriting yoki kuting."
+      });
     } finally {
       setIsGenerating(false);
     }
@@ -43,23 +55,23 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
   return (
     <div className="animate-fade-in max-w-4xl mx-auto space-y-8 pb-10">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-zinc-50 mb-2 flex items-center justify-center gap-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
           <DollarSign className="text-emerald-500" /> AI Financial Advisor
         </h2>
-        <p className="text-zinc-400 text-sm">Oylik moliyaviy ma'lumotlaringizni kiriting va Gemini AI orqali chuqur tahlil oling.</p>
+        <p className="text-muted-foreground text-sm">Oylik moliyaviy ma'lumotlaringizni kiriting va Gemini AI orqali chuqur tahlil oling.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Inputs */}
-        <Card className="bg-zinc-950 border-zinc-800 shadow-xl p-0">
+        <Card className="bg-background border-border shadow-xl p-0">
           <CardContent className="p-6 space-y-4">
-            <h3 className="text-lg font-bold text-zinc-50 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
               <Calculator className="w-5 h-5 text-blue-500" /> Oylik Ko'rsatkichlar (UZS)
             </h3>
             
             {Object.keys(inputs).map((key) => (
               <div key={key}>
-                <label className="text-xs font-mono text-zinc-500 uppercase block mb-1">
+                <label className="text-xs font-mono text-muted-foreground uppercase block mb-1">
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </label>
                 <Input 
@@ -68,7 +80,7 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
                   value={(inputs as any)[key] || ""}
                   onChange={handleChange}
                   placeholder="0"
-                  className="w-full bg-zinc-900/50 border-zinc-800 text-zinc-50 h-12 focus-visible:ring-emerald-500"
+                  className="w-full bg-card/50 border-border text-foreground h-12 focus-visible:ring-emerald-500"
                 />
               </div>
             ))}
@@ -86,7 +98,7 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
         {/* Outputs */}
         <div className="space-y-6">
           {!result && !isGenerating && (
-             <Card className="bg-zinc-950 border-zinc-800 shadow-xl h-full flex flex-col items-center justify-center text-zinc-500 text-center p-0">
+             <Card className="bg-background border-border shadow-xl h-full flex flex-col items-center justify-center text-muted-foreground text-center p-0">
                <CardContent className="p-6">
                  <PieChart className="w-12 h-12 mb-4 opacity-20 mx-auto" />
                  <p>Ma'lumotlarni kiritib, "AI Generate" tugmasini bosing.</p>
@@ -95,7 +107,7 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
           )}
 
           {isGenerating && (
-             <Card className="bg-zinc-950 border-zinc-800 shadow-xl h-full flex flex-col items-center justify-center text-emerald-500 text-center animate-pulse p-0">
+             <Card className="bg-background border-border shadow-xl h-full flex flex-col items-center justify-center text-emerald-500 text-center animate-pulse p-0">
                <CardContent className="p-6">
                  <Sparkles className="w-12 h-12 mb-4 mx-auto" />
                  <p>Gemini AI moliyaviy modelingizni tahlil qilmoqda...</p>
@@ -105,27 +117,27 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
 
           {result && !isGenerating && (
              <>
-                <Card className="bg-gradient-to-br from-zinc-950 to-zinc-900 border-zinc-800 shadow-xl p-0">
+                <Card className="bg-gradient-to-br from-zinc-950 to-zinc-900 border-border shadow-xl p-0">
                   <CardContent className="p-6">
-                    <p className="text-xs font-mono text-zinc-400 uppercase mb-2">Profit Estimate</p>
+                    <p className="text-xs font-mono text-muted-foreground uppercase mb-2">Profit Estimate</p>
                     <p className={`text-4xl font-black mb-1 ${result.profitEstimate >= 0 ? 'text-emerald-400' : 'text-rose-500'}`}>
                       {result.profitEstimate?.toLocaleString()} UZS
                     </p>
-                    <p className="text-sm text-zinc-300">Cash Flow: <span className="font-bold">{result.cashFlow}</span></p>
+                    <p className="text-sm text-muted-foreground">Cash Flow: <span className="font-bold">{result.cashFlow}</span></p>
                   </CardContent>
                 </Card>
 
-                <Card className="bg-zinc-950 border-zinc-800 shadow-xl p-0">
+                <Card className="bg-background border-border shadow-xl p-0">
                    <CardContent className="p-6">
-                     <h4 className="text-sm font-bold text-zinc-50 mb-4">Budget Allocation Analysis</h4>
+                     <h4 className="text-sm font-bold text-foreground mb-4">Budget Allocation Analysis</h4>
                      <div className="space-y-3">
                        {result.budgetAllocation?.map((item: any, i: number) => (
                          <div key={i}>
                            <div className="flex justify-between text-xs mb-1">
-                             <span className="text-zinc-300">{item.category}</span>
+                             <span className="text-muted-foreground">{item.category}</span>
                              <span className={item.status === 'High' ? 'text-rose-400' : 'text-emerald-400'}>{item.status}</span>
                            </div>
-                           <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                           <div className="w-full h-1.5 bg-card rounded-full overflow-hidden">
                              <div className={`h-full ${item.status === 'High' ? 'bg-rose-500' : 'bg-emerald-500'}`} style={{ width: `${Math.min(item.percentage, 100)}%` }}></div>
                            </div>
                          </div>
@@ -134,16 +146,16 @@ export default function SmartBudget({ dna }: { dna: BusinessDNA }) {
                    </CardContent>
                 </Card>
 
-                <Card className="bg-zinc-950 border-zinc-800 shadow-xl p-0">
+                <Card className="bg-background border-border shadow-xl p-0">
                    <CardContent className="p-6">
-                     <h4 className="text-sm font-bold text-zinc-50 mb-2">Risk & Growth Suggestions</h4>
+                     <h4 className="text-sm font-bold text-foreground mb-2">Risk & Growth Suggestions</h4>
                      <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-lg mb-3">
                         <p className="text-xs text-rose-400 font-bold mb-1">Risk Factor: {result.riskLevel}</p>
-                        <p className="text-xs text-zinc-300">{result.riskReason}</p>
+                        <p className="text-xs text-muted-foreground">{result.riskReason}</p>
                      </div>
                      <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-lg">
                         <p className="text-xs text-emerald-400 font-bold mb-1">Growth Suggestion</p>
-                        <p className="text-xs text-zinc-300">{result.growthSuggestion}</p>
+                        <p className="text-xs text-muted-foreground">{result.growthSuggestion}</p>
                      </div>
                    </CardContent>
                 </Card>

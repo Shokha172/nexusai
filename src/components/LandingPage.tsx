@@ -4,6 +4,7 @@ import { Language, translations } from "../translations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ModeToggle } from "./ModeToggle";
 
 interface LandingPageProps {
   onStart: () => void;
@@ -80,7 +81,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
     },
     {
       name: t.proPlan,
-      price: "199,000 UZS",
+      price: "99,000 UZS",
       period: t.perMonth,
       features: lang === "uz" ? [
         "Cheksiz Biznes DNK",
@@ -109,7 +110,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
     },
     {
       name: t.businessPlan,
-      price: "499,000 UZS",
+      price: "249,000 UZS",
       period: t.perMonth,
       features: lang === "uz" ? [
         "PRO tarifidagi barcha imkoniyatlar",
@@ -136,31 +137,31 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
   ];
 
   return (
-    <div id="landing-container" className="min-h-screen bg-zinc-950 text-zinc-50 font-sans selection:bg-emerald-500 selection:text-zinc-950 overflow-x-hidden">
+    <div id="landing-container" className="min-h-screen bg-background text-foreground font-sans selection:bg-emerald-500 selection:text-zinc-950 overflow-x-hidden">
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-zinc-50 rounded-lg flex items-center justify-center shadow-md">
-              <div className="w-4.5 h-4.5 bg-zinc-950 rounded-sm rotate-45"></div>
+            <div className="w-9 h-9 bg-foreground rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-4.5 h-4.5 bg-background rounded-sm rotate-45"></div>
             </div>
-            <span className="font-sans font-bold text-lg tracking-tight text-zinc-50">
+            <span className="font-sans font-bold text-lg tracking-tight text-foreground">
               NEXUS AI
             </span>
-            <Badge variant="outline" className="text-[10px] font-mono text-zinc-500 border-zinc-800 rounded uppercase">
+            <Badge variant="outline" className="text-[10px] font-mono text-muted-foreground border-border rounded uppercase">
               BETA
             </Badge>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm text-zinc-400">
-            <a href="#features" className="hover:text-zinc-50 transition-colors">{t.features}</a>
-            <a href="#pricing" className="hover:text-zinc-50 transition-colors">{t.pricing}</a>
-            <div className="flex bg-zinc-900 border border-zinc-800 rounded-full p-0.5">
+          <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+            <a href="#features" className="hover:text-foreground transition-colors">{t.features}</a>
+            <a href="#pricing" className="hover:text-foreground transition-colors">{t.pricing}</a>
+            <div className="flex bg-card border border-border rounded-full p-0.5">
               <button 
                 id="lang-uz-btn"
                 onClick={() => onSetLang("uz")}
                 className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono transition-all ${
-                  lang === "uz" ? "bg-zinc-50 text-zinc-950" : "text-zinc-400 hover:text-zinc-50"
+                  lang === "uz" ? "bg-foreground text-zinc-950" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 UZB
@@ -169,7 +170,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
                 id="lang-ru-btn"
                 onClick={() => onSetLang("ru")}
                 className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono transition-all ${
-                  lang === "ru" ? "bg-zinc-50 text-zinc-950" : "text-zinc-400 hover:text-zinc-50"
+                  lang === "ru" ? "bg-foreground text-zinc-950" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 РУС
@@ -178,12 +179,13 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
                 id="lang-en-btn"
                 onClick={() => onSetLang("en")}
                 className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono transition-all ${
-                  lang === "en" ? "bg-zinc-50 text-zinc-950" : "text-zinc-400 hover:text-zinc-50"
+                  lang === "en" ? "bg-foreground text-zinc-950" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 ENG
               </button>
             </div>
+            <ModeToggle />
           </nav>
 
           <div className="flex items-center gap-4">
@@ -191,7 +193,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
               id="header-login-btn"
               variant="ghost"
               onClick={onLogin}
-              className="text-sm font-medium text-zinc-400 hover:text-zinc-50"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               {t.signIn}
             </Button>
@@ -214,9 +216,9 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 border border-zinc-800 bg-zinc-900/50 text-zinc-400 px-3.5 py-1.5 rounded-full text-xs font-mono mb-8"
+            className="inline-flex items-center gap-2 border border-border bg-card/50 text-muted-foreground px-3.5 py-1.5 rounded-full text-xs font-mono mb-8"
           >
-            <Bot className="w-3.5 h-3.5 text-zinc-50" />
+            <Bot className="w-3.5 h-3.5 text-foreground" />
             <span>{lang === "uz" ? "AI Business Advisor for Uzbekistan" : lang === "ru" ? "ИИ Бизнес-Советник для Узбекистана" : "AI Business Advisor for Uzbekistan"}</span>
           </motion.div>
 
@@ -224,7 +226,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl md:text-6xl font-sans font-medium tracking-tight text-zinc-50 leading-[1.1] mb-6"
+            className="text-4xl md:text-6xl font-sans font-medium tracking-tight text-foreground leading-[1.1] mb-6"
           >
             {lang === "uz" ? (
               <>Biz AI chatbot qurmadik. Biz <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-blue-500 bg-clip-text text-transparent font-extrabold">AI Business Advisor</span> qurdik.</>
@@ -239,7 +241,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-base md:text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto mb-10"
+            className="text-base md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10"
           >
             {t.heroSub}
           </motion.p>
@@ -262,7 +264,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
               variant="outline"
               size="lg"
               asChild
-              className="w-full sm:w-auto rounded-full text-base px-8 h-12 border-zinc-800 bg-zinc-950/50 hover:bg-zinc-900"
+              className="w-full sm:w-auto rounded-full text-base px-8 h-12 border-border bg-background/50 hover:bg-card"
             >
               <a href="#features">
                 {lang === "uz" ? "Imkoniyatlarni O'rganish" : lang === "ru" ? "Изучить возможности" : "Explore Capabilities"}
@@ -274,58 +276,58 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
 
       {/* Grid Dashboard Preview Mock */}
       <section className="px-6 pb-24">
-        <Card className="max-w-6xl mx-auto border-zinc-800 bg-zinc-950 overflow-hidden shadow-2xl shadow-emerald-900/10">
-          <div className="h-10 border-b border-zinc-800 bg-zinc-900/50 flex items-center px-4 gap-2">
-            <span className="w-3 h-3 rounded-full bg-zinc-800"></span>
-            <span className="w-3 h-3 rounded-full bg-zinc-800"></span>
-            <span className="w-3 h-3 rounded-full bg-zinc-800"></span>
-            <span className="text-xs text-zinc-500 font-mono ml-4">https://nexusai.uz/dashboard</span>
+        <Card className="max-w-6xl mx-auto border-border bg-background overflow-hidden shadow-2xl shadow-emerald-900/10">
+          <div className="h-10 border-b border-border bg-card/50 flex items-center px-4 gap-2">
+            <span className="w-3 h-3 rounded-full bg-muted"></span>
+            <span className="w-3 h-3 rounded-full bg-muted"></span>
+            <span className="w-3 h-3 rounded-full bg-muted"></span>
+            <span className="text-xs text-muted-foreground font-mono ml-4">https://nexusai.uz/dashboard</span>
           </div>
           <CardContent className="p-4 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-6 opacity-90 pt-8">
             {/* Financials card mock */}
-            <Card className="md:col-span-4 border-zinc-800 bg-zinc-900/30 flex flex-col justify-between p-0">
+            <Card className="md:col-span-4 border-border bg-card/30 flex flex-col justify-between p-0">
               <CardHeader className="p-5 pb-0">
                 <span className="text-[11px] font-mono text-emerald-400 tracking-wider">{lang === "uz" ? "MOLIYAVIY SOG'LOM" : lang === "ru" ? "ФИНАНСОВОЕ ЗДОРОВЬЕ" : "FINANCIAL HEALTH"}</span>
-                <CardTitle className="text-lg text-zinc-50 mt-1">{lang === "uz" ? "Byudjet Taqsimoti" : lang === "ru" ? "Распределение Бюджета" : "Budget Allocation"}</CardTitle>
+                <CardTitle className="text-lg text-foreground mt-1">{lang === "uz" ? "Byudjet Taqsimoti" : lang === "ru" ? "Распределение Бюджета" : "Budget Allocation"}</CardTitle>
               </CardHeader>
               <CardContent className="p-5 flex-grow">
                 <div className="space-y-4">
                   <div>
-                    <div className="flex justify-between text-xs mb-1.5"><span className="text-zinc-400">Marketing</span> <span className="text-zinc-50">25%</span></div>
-                    <div className="w-full bg-zinc-800 h-1.5 rounded-full"><div className="bg-emerald-400 h-1.5 rounded-full w-[25%]"></div></div>
+                    <div className="flex justify-between text-xs mb-1.5"><span className="text-muted-foreground">Marketing</span> <span className="text-foreground">25%</span></div>
+                    <div className="w-full bg-muted h-1.5 rounded-full"><div className="bg-emerald-400 h-1.5 rounded-full w-[25%]"></div></div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-xs mb-1.5"><span className="text-zinc-400">Inventory</span> <span className="text-zinc-50">35%</span></div>
-                    <div className="w-full bg-zinc-800 h-1.5 rounded-full"><div className="bg-indigo-400 h-1.5 rounded-full w-[35%]"></div></div>
+                    <div className="flex justify-between text-xs mb-1.5"><span className="text-muted-foreground">Inventory</span> <span className="text-foreground">35%</span></div>
+                    <div className="w-full bg-muted h-1.5 rounded-full"><div className="bg-indigo-400 h-1.5 rounded-full w-[35%]"></div></div>
                   </div>
                   <div>
-                    <div className="flex justify-between text-xs mb-1.5"><span className="text-zinc-400">Emergency</span> <span className="text-zinc-50">10%</span></div>
-                    <div className="w-full bg-zinc-800 h-1.5 rounded-full"><div className="bg-orange-400 h-1.5 rounded-full w-[10%]"></div></div>
+                    <div className="flex justify-between text-xs mb-1.5"><span className="text-muted-foreground">Emergency</span> <span className="text-foreground">10%</span></div>
+                    <div className="w-full bg-muted h-1.5 rounded-full"><div className="bg-orange-400 h-1.5 rounded-full w-[10%]"></div></div>
                   </div>
                 </div>
               </CardContent>
               <CardFooter className="p-5 pt-0">
-                <p className="text-xs text-zinc-400 italic">"{lang === "uz" ? "Siz reklamaga 32% sarflayapsiz, raqobatchilar esa 18%. Reklama xarajatlarini kamaytiring." : lang === "ru" ? "Вы тратите 32% на рекламу, а конкуренты - 18%. Сократите рекламные расходы." : "You spend 32% on ads while competitors spend 18%. Reduce ad spending."}"</p>
+                <p className="text-xs text-muted-foreground italic">"{lang === "uz" ? "Siz reklamaga 32% sarflayapsiz, raqobatchilar esa 18%. Reklama xarajatlarini kamaytiring." : lang === "ru" ? "Вы тратите 32% на рекламу, а конкуренты - 18%. Сократите рекламные расходы." : "You spend 32% on ads while competitors spend 18%. Reduce ad spending."}"</p>
               </CardFooter>
             </Card>
 
             {/* AI Mentor card mock */}
-            <Card className="md:col-span-5 border-zinc-800 bg-zinc-900/30 p-0">
+            <Card className="md:col-span-5 border-border bg-card/30 p-0">
               <CardHeader className="p-5 pb-0">
                 <span className="text-[11px] font-mono text-emerald-400 tracking-wider">{lang === "uz" ? "HAFTALIK AI MENTOR" : lang === "ru" ? "ЕЖЕНЕДЕЛЬНЫЙ ИИ-МЕНТОР" : "WEEKLY AI MENTOR"}</span>
-                <CardTitle className="text-lg text-zinc-50 mt-1">{lang === "uz" ? "Joriy haftalik vazifalar" : lang === "ru" ? "Задачи на текущую неделю" : "Current Weekly Tasks"}</CardTitle>
+                <CardTitle className="text-lg text-foreground mt-1">{lang === "uz" ? "Joriy haftalik vazifalar" : lang === "ru" ? "Задачи на текущую неделю" : "Current Weekly Tasks"}</CardTitle>
               </CardHeader>
               <CardContent className="p-5 space-y-4">
                 <div className="flex gap-3 items-start">
                   <div className="w-7 h-7 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0"><Bot className="w-4 h-4"/></div>
-                  <div className="bg-zinc-950/50 border border-zinc-800/50 px-3.5 py-2.5 rounded-lg text-xs text-zinc-300 w-full">
-                    <span className="font-semibold text-zinc-50 mb-1 block">{lang === "uz" ? "Tavsiya: Narxlarni qayta ko'rib chiqing" : lang === "ru" ? "Рекомендация: Пересмотрите цены" : "Recommendation: Review Pricing"}</span>
+                  <div className="bg-background/50 border border-border/50 px-3.5 py-2.5 rounded-lg text-xs text-muted-foreground w-full">
+                    <span className="font-semibold text-foreground mb-1 block">{lang === "uz" ? "Tavsiya: Narxlarni qayta ko'rib chiqing" : lang === "ru" ? "Рекомендация: Пересмотрите цены" : "Recommendation: Review Pricing"}</span>
                     {lang === "uz" ? "Aylanma mablag'ingiz past. Premium xizmatlar narxini 10% ga oshirib ko'ring." : lang === "ru" ? "У вас низкий оборот. Попробуйте увеличить цены на премиум-услуги на 10%." : "Your cash flow is low. Try increasing premium service pricing by 10%."}
                   </div>
                 </div>
                 <div className="flex gap-3 items-start">
                   <div className="w-7 h-7 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-400 shrink-0"><Bot className="w-4 h-4"/></div>
-                  <div className="bg-zinc-950/50 px-3.5 py-2.5 rounded-lg text-xs text-zinc-300 w-full border border-orange-900/30">
+                  <div className="bg-background/50 px-3.5 py-2.5 rounded-lg text-xs text-muted-foreground w-full border border-orange-900/30">
                     <span className="font-semibold text-orange-400 mb-1 block">{lang === "uz" ? "Ogohlantirish: Mijozlar yo'qotilmoqda" : lang === "ru" ? "Предупреждение: Потеря клиентов" : "Warning: Customer Churn"}</span>
                     {lang === "uz" ? "Yangi raqobatchi bozorda paydo bo'ldi. Sodiqlik dasturini joriy qiling." : lang === "ru" ? "На рынке появился новый конкурент. Внедрите программу лояльности." : "A new competitor appeared. Implement a loyalty program."}
                   </div>
@@ -334,20 +336,20 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
             </Card>
 
             {/* Location & Competitors mock */}
-            <Card className="md:col-span-3 border-zinc-800 bg-zinc-900/30 flex flex-col justify-between p-0">
+            <Card className="md:col-span-3 border-border bg-card/30 flex flex-col justify-between p-0">
               <CardHeader className="p-5 pb-0">
                 <span className="text-[11px] font-mono text-emerald-400 tracking-wider">{lang === "uz" ? "LOKATSIYA VA RAQOBAT" : lang === "ru" ? "ЛОКАЦИЯ И КОНКУРЕНТЫ" : "LOCATION & COMPETITION"}</span>
-                <CardTitle className="text-lg text-zinc-50 mt-1">{lang === "uz" ? "Bozor tahlili" : lang === "ru" ? "Анализ рынка" : "Market Analysis"}</CardTitle>
+                <CardTitle className="text-lg text-foreground mt-1">{lang === "uz" ? "Bozor tahlili" : lang === "ru" ? "Анализ рынка" : "Market Analysis"}</CardTitle>
               </CardHeader>
               <CardContent className="p-5 flex-grow">
-                <div className="space-y-3 font-mono text-xs text-zinc-400">
-                  <div className="flex justify-between border-b border-zinc-800/50 pb-1.5"><span>{lang === "uz" ? "Hudud" : lang === "ru" ? "Район" : "District"}</span> <span className="text-zinc-50">Mirobod</span></div>
-                  <div className="flex justify-between border-b border-zinc-800/50 pb-1.5"><span>{lang === "uz" ? "Raqobat" : lang === "ru" ? "Конкуренция" : "Competition"}</span> <span className="text-orange-400">Yuqori</span></div>
+                <div className="space-y-3 font-mono text-xs text-muted-foreground">
+                  <div className="flex justify-between border-b border-border/50 pb-1.5"><span>{lang === "uz" ? "Hudud" : lang === "ru" ? "Район" : "District"}</span> <span className="text-foreground">Mirobod</span></div>
+                  <div className="flex justify-between border-b border-border/50 pb-1.5"><span>{lang === "uz" ? "Raqobat" : lang === "ru" ? "Конкуренция" : "Competition"}</span> <span className="text-orange-400">Yuqori</span></div>
                   <div className="flex justify-between pb-1.5"><span>{lang === "uz" ? "Potensial" : lang === "ru" ? "Потенциал" : "Potential"}</span> <span className="text-emerald-400">92/100</span></div>
                 </div>
               </CardContent>
               <CardFooter className="p-5 pt-0">
-                <span className="text-[11px] text-zinc-500 italic">"{lang === "uz" ? "Ushbu hududda kafelar ko'p, lekin sifatli dizayn studiyalar yetishmaydi." : lang === "ru" ? "В этом районе много кафе, но не хватает качественных дизайн-студий." : "Many cafes in this area, but lacks quality design studios."}"</span>
+                <span className="text-[11px] text-muted-foreground italic">"{lang === "uz" ? "Ushbu hududda kafelar ko'p, lekin sifatli dizayn studiyalar yetishmaydi." : lang === "ru" ? "В этом районе много кафе, но не хватает качественных дизайн-студий." : "Many cafes in this area, but lacks quality design studios."}"</span>
               </CardFooter>
             </Card>
           </CardContent>
@@ -355,14 +357,14 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
       </section>
 
       {/* Feature Grid */}
-      <section id="features" className="py-24 border-t border-zinc-900 bg-zinc-950/40 relative">
+      <section id="features" className="py-24 border-t border-border bg-background/40 relative">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider">{lang === "uz" ? "Platforma Imkoniyatlari" : lang === "ru" ? "Возможности Платформы" : "Platform Capabilities"}</span>
-            <h2 className="text-3xl md:text-4xl font-sans font-semibold text-zinc-50 tracking-tight mt-2">
+            <h2 className="text-3xl md:text-4xl font-sans font-semibold text-foreground tracking-tight mt-2">
               {lang === "uz" ? "Tadbirkorlar Uchun Yagona Markaz" : lang === "ru" ? "Единый Центр Для Предпринимателей" : "The Single Hub for Entrepreneurs"}
             </h2>
-            <p className="text-zinc-400 mt-4">
+            <p className="text-muted-foreground mt-4">
               {lang === "uz" ? "NEXUS AI - sizning biznesingiz haqida qayg'uradigan va kunlik maslahatlar beradigan aqlli yordamchi." : lang === "ru" ? "NEXUS AI - умный помощник, который заботится о вашем бизнесе и дает ежедневные советы." : "NEXUS AI - a smart assistant that cares about your business and gives daily advice."}
             </p>
           </div>
@@ -371,16 +373,16 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
             {features.map((feat, idx) => (
               <Card 
                 key={idx} 
-                className="border-zinc-800 bg-zinc-950/60 hover:border-zinc-700 transition-all group duration-300"
+                className="border-border bg-background/60 hover:border-border transition-all group duration-300"
               >
                 <CardHeader>
-                  <div className="mb-2 p-2 bg-zinc-900 w-fit rounded-lg border border-zinc-800 group-hover:border-emerald-500/30 transition-all">
+                  <div className="mb-2 p-2 bg-card w-fit rounded-lg border border-border group-hover:border-emerald-500/30 transition-all">
                     {feat.icon}
                   </div>
-                  <CardTitle className="text-xl text-zinc-50">{feat.title}</CardTitle>
+                  <CardTitle className="text-xl text-foreground">{feat.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-zinc-400 text-sm leading-relaxed">{feat.description}</CardDescription>
+                  <CardDescription className="text-muted-foreground text-sm leading-relaxed">{feat.description}</CardDescription>
                 </CardContent>
               </Card>
             ))}
@@ -389,11 +391,11 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
       </section>
 
       {/* Pricing Grid */}
-      <section id="pricing" className="py-24 border-t border-zinc-900 bg-zinc-950">
+      <section id="pricing" className="py-24 border-t border-border bg-background">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider">{lang === "uz" ? "SaaS Narxlari" : lang === "ru" ? "Цены SaaS" : "SaaS Pricing"}</span>
-            <h2 className="text-3xl md:text-4xl font-sans font-semibold text-zinc-50 tracking-tight mt-2">
+            <h2 className="text-3xl md:text-4xl font-sans font-semibold text-foreground tracking-tight mt-2">
               {lang === "uz" ? "Shaffof, Qiymatga Asoslangan Tariflar" : lang === "ru" ? "Прозрачные тарифы" : "Transparent, Value-Driven Plans"}
             </h2>
           </div>
@@ -404,26 +406,26 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
                 key={idx} 
                 className={`flex flex-col justify-between transition-all relative ${
                   plan.popular 
-                    ? "border-emerald-500/50 bg-zinc-900/80 shadow-2xl shadow-emerald-500/5 lg:-translate-y-2 z-10" 
-                    : "border-zinc-800 bg-zinc-950/80"
+                    ? "border-emerald-500/50 bg-card/80 shadow-2xl shadow-emerald-500/5 lg:-translate-y-2 z-10" 
+                    : "border-border bg-background/80"
                 }`}
               >
                 {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-zinc-50 font-mono tracking-wider uppercase border-none">
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-primary text-foreground font-mono tracking-wider uppercase border-none">
                     {lang === "uz" ? "Eng Ommabop" : lang === "ru" ? "Самый Популярный" : "Most Popular"}
                   </Badge>
                 )}
                 <CardHeader>
                   <CardDescription className="font-mono tracking-wider uppercase mb-1">{plan.name}</CardDescription>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-3xl md:text-4xl font-sans font-bold text-zinc-50 tracking-tight">{plan.price}</span>
-                    <span className="text-xs text-zinc-500">{plan.period}</span>
+                    <span className="text-3xl md:text-4xl font-sans font-bold text-foreground tracking-tight">{plan.price}</span>
+                    <span className="text-xs text-muted-foreground">{plan.period}</span>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow border-t border-zinc-800/50 pt-6">
+                <CardContent className="flex-grow border-t border-border/50 pt-6">
                   <ul className="space-y-3">
                     {plan.features.map((feature, fIdx) => (
-                      <li key={fIdx} className="text-sm text-zinc-300 flex items-start gap-2.5 leading-relaxed">
+                      <li key={fIdx} className="text-sm text-muted-foreground flex items-start gap-2.5 leading-relaxed">
                         <span className="text-emerald-400 shrink-0">✓</span>
                         <span>{feature}</span>
                       </li>
@@ -435,7 +437,7 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
                     id={`pricing-${plan.name.split(' ')[0].toLowerCase()}-btn`}
                     onClick={onStart}
                     variant={plan.popular ? "default" : "outline"}
-                    className={`w-full ${plan.popular ? "bg-gradient-primary border-none text-white hover:opacity-90" : "border-zinc-700 hover:bg-zinc-800"}`}
+                    className={`w-full ${plan.popular ? "bg-gradient-primary border-none text-white hover:opacity-90" : "border-border hover:bg-muted"}`}
                   >
                     {plan.cta}
                   </Button>
@@ -443,23 +445,33 @@ export default function LandingPage({ onStart, onLogin, lang, onSetLang }: Landi
               </Card>
             ))}
           </div>
+
+          <div className="mt-12 text-center max-w-2xl mx-auto bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
+            <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+              {lang === "uz" 
+                ? "🎁 Eslatma: Ushbu loyiha bozorga to'liq chiqquniga qadar mutlaqo bepul bo'lib qoladi! Keyinchalik yuqoridagi pullik obunalarni joriy etamiz."
+                : lang === "ru"
+                ? "🎁 Примечание: Данный проект будет абсолютно бесплатным до его официального выхода на рынок! Платные подписки будут введены позже."
+                : "🎁 Note: This project will remain completely free until it officially launches to the market! Paid subscriptions will be introduced later."}
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 bg-zinc-950 py-12 px-6">
+      <footer className="border-t border-border bg-background py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-zinc-50 flex items-center justify-center">
-              <div className="w-3 h-3 bg-zinc-950 rounded-[2px] rotate-45"></div>
+            <div className="w-6 h-6 rounded-md bg-foreground flex items-center justify-center">
+              <div className="w-3 h-3 bg-background rounded-[2px] rotate-45"></div>
             </div>
-            <span className="font-sans font-bold text-sm tracking-tight text-zinc-50">NEXUS AI</span>
-            <span className="text-xs text-zinc-500">© 2026. All rights reserved.</span>
+            <span className="font-sans font-bold text-sm tracking-tight text-foreground">NEXUS AI</span>
+            <span className="text-xs text-muted-foreground">© 2026. All rights reserved.</span>
           </div>
 
-          <div className="flex items-center gap-8 text-xs text-zinc-500">
+          <div className="flex items-center gap-8 text-xs text-muted-foreground">
             <span>{lang === "uz" ? "Sizning shaxsiy AI Biznes Maslahatchingiz" : lang === "ru" ? "Ваш личный ИИ Бизнес-Советник" : "Your Personal AI Business Advisor"}</span>
-            <a href="#landing-container" className="hover:text-zinc-50 transition-colors">{lang === "uz" ? "Tepaga qaytish" : lang === "ru" ? "Наверх" : "Back to top"}</a>
+            <a href="#landing-container" className="hover:text-foreground transition-colors">{lang === "uz" ? "Tepaga qaytish" : lang === "ru" ? "Наверх" : "Back to top"}</a>
           </div>
         </div>
       </footer>

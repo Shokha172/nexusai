@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { createServer as createViteServer } from "vite";
 import TelegramBot from "node-telegram-bot-api";
+import OpenAI from "openai";
 // Load environment variables
 dotenv.config();
 
@@ -17,7 +18,7 @@ app.use(express.json());
 let aiClient: GoogleGenAI | null = null;
 
 function getGeminiClient(): GoogleGenAI | null {
-  if (!aiClient && process.env.GEMINI_API_KEY) {
+  if (!aiClient) {
     try {
       aiClient = new GoogleGenAI({
         apiKey: process.env.GEMINI_API_KEY,
@@ -47,23 +48,29 @@ function getTelegramBot(): TelegramBot | null {
       telegramBot.on("message", async (msg) => {
         const chatId = msg.chat.id;
         if (msg.text === "/start") {
-          telegramBot?.sendMessage(chatId, "Welcome to NEXUS AI Assistant (@plannexusbot). Connect your dashboard to receive PDF reports, weekly missions, and real-time alerts.");
+          telegramBot?.sendMessage(chatId, "NEXUS AI Yordamchisiga xush kelibsiz (@plannexusbot). PDF hisobotlar, haftalik vazifalar va muhim ogohlantirishlarni qabul qilish uchun tizim bilan bog'laning.");
         } else if (msg.text === "/summary") {
-          telegramBot?.sendMessage(chatId, "Fetching latest dashboard summary...");
+          telegramBot?.sendMessage(chatId, "Bosh sahifa ma'lumotlari yuklanmoqda...");
           // Here we would typically fetch the user's latest summary from DB
-          telegramBot?.sendMessage(chatId, "Your Business Score is 84. You have 3 pending Weekly Missions. Keep up the good work!");
+          telegramBot?.sendMessage(chatId, "Sizning biznes ko'rsatkicingiz: 84. Sizda 3 ta bajarilishi kerak bo'lgan haftalik vazifa bor. Shu ruhda davom eting!");
         } else {
           // Send to Gemini
+          telegramBot?.sendMessage(chatId, "Analiz qilmoqda, biroz kuting ⏳...");
+          telegramBot?.sendChatAction(chatId, 'typing');
           const client = getGeminiClient();
           if (client) {
              try {
                 const response = await client.models.generateContent({
                    model: "gemini-3.5-flash",
                    contents: msg.text || "Hello",
-                   config: { systemInstruction: "You are NEXUS AI, a brilliant Business Assistant. Reply concisely for Telegram." }
+                   config: { 
+                     systemInstruction: "You are NEXUS AI, a Business Assistant. Be extremely concise. Reply in 1-2 short sentences max. Write in Uzbek.",
+                     maxOutputTokens: 150
+                   }
                 });
                 telegramBot?.sendMessage(chatId, response.text || "I processed your request but have no response.");
              } catch (err) {
+                console.error("Gemini Telegram Error:", err);
                 telegramBot?.sendMessage(chatId, "Sorry, my AI engine is currently unavailable.");
              }
           } else {
@@ -158,7 +165,7 @@ app.post("/api/dna/analyze", async (req, res) => {
         model: "gemini-3.1-pro-preview",
         contents: prompt,
         config: {
-          systemInstruction: "You are the Lead Startup Strategist and Solution Architect for Tayanch AI. Provide a deep, extremely realistic, highly personalized analysis. Avoid generic advice. Use your advanced reasoning capabilities to formulate precise solutions.",
+          systemInstruction: "You are the Lead Startup Strategist and Solution Architect for Tayanch AI. Provide a deep, extremely realistic, highly personalized analysis. Avoid generic advice. Use your advanced reasoning capabilities to formulate precise solutions. Write your entire response strictly in the Uzbek language.",
           thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH },
           responseMimeType: "application/json",
           responseSchema: schema
@@ -170,7 +177,7 @@ app.post("/api/dna/analyze", async (req, res) => {
         model: "gemini-3.5-flash",
         contents: prompt,
         config: {
-          systemInstruction: "You are the Lead Startup Strategist and Solution Architect for Tayanch AI. Provide a deep, extremely realistic, highly personalized analysis. Avoid generic advice.",
+          systemInstruction: "You are the Lead Startup Strategist and Solution Architect for Tayanch AI. Provide a deep, extremely realistic, highly personalized analysis. Avoid generic advice. Write your entire response strictly in the Uzbek language.",
           responseMimeType: "application/json",
           responseSchema: schema
         }
@@ -222,7 +229,7 @@ app.post("/api/dna/chat", async (req, res) => {
       - Mission: ${dna?.mission || "N/A"}
       - Personality of the company: ${dna?.personality || "N/A"}
 
-      Adopt the tone of an expert C-level advisor. Be practical, direct, and focused on helping the entrepreneur make profitable, risk-reduced decisions. Answer in depth, with bullet points where appropriate. If asked about Uzbekistan market dynamics (e.g., Click, Payme, local competition, Tashkent), include highly tailored regional advice.
+      Adopt the tone of an expert C-level advisor. Be practical, direct, and focused on helping the entrepreneur make profitable, risk-reduced decisions. Answer in depth, with bullet points where appropriate. If asked about Uzbekistan market dynamics (e.g., Click, Payme, local competition, Tashkent), include highly tailored regional advice. Write your entire response strictly in the Uzbek language.
     `;
 
     // Configure model and features based on request
@@ -295,53 +302,38 @@ app.post("/api/dna/chat-stream", async (req, res) => {
     return res.status(400).json({ error: "Messages and Agent details are required." });
   }
 
-  const client = getGeminiClient();
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  if (!client) {
-    // Mock streaming
-    const mockResponse = getMockChatResponse(agent, messages, dna);
-    const words = mockResponse.split(" ");
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < words.length) {
-        res.write(`data: ${JSON.stringify({ text: words[i] + " " })}\n\n`);
-        i++;
-      } else {
-        clearInterval(interval);
-        res.write("data: [DONE]\n\n");
-        res.end();
-      }
-    }, 50);
-    return;
-  }
-
   try {
-    const formattedHistory = messages.map((m: any) => ({
+    const client = getGeminiClient();
+    if (!client) throw new Error("Gemini client not initialized");
+
+    const systemPrompt = `You are "${agent.name}", the "${agent.role}" for the user's business idea. Use Markdown formatting. Use the context: Industry: ${dna?.industry}, Budget: ${dna?.budget}. Write your entire response strictly in the Uzbek language.`;
+
+    const formattedMessages = messages.map((m: any) => ({
       role: m.sender === "user" ? "user" : "model",
       parts: [{ text: m.text }]
     }));
-    const lastMessage = formattedHistory[formattedHistory.length - 1]?.parts[0]?.text || "";
-    const historyWithoutLast = formattedHistory.slice(0, -1);
 
-    const chatInstance = client.chats.create({
+    const stream = await client.models.generateContentStream({
       model: "gemini-3.5-flash",
-      history: historyWithoutLast,
+      contents: formattedMessages,
       config: {
-        systemInstruction: `You are "${agent.name}", the "${agent.role}" for the user's business idea. Use Markdown formatting. Use the context: Industry: ${dna?.industry}, Budget: ${dna?.budget}`
+        systemInstruction: systemPrompt
       }
     });
 
-    const stream = await chatInstance.sendMessageStream({ message: lastMessage });
     for await (const chunk of stream) {
-      res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
+      if (chunk.text) {
+        res.write(`data: ${JSON.stringify({ text: chunk.text })}\n\n`);
+      }
     }
     res.write("data: [DONE]\n\n");
     res.end();
   } catch (err: any) {
-    console.error("Gemini stream error:", err);
+    console.error("OpenAI stream error:", err);
     res.write(`data: ${JSON.stringify({ text: "Error generating response." })}\n\n`);
     res.write("data: [DONE]\n\n");
     res.end();
@@ -371,7 +363,7 @@ app.post("/api/dna/plan", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are a professional Startup Incubator director and Business Planner. Write an extensive, professional business plan suitable for seed-stage investors.",
+        systemInstruction: "You are a professional Startup Incubator director and Business Planner. Write an extensive, professional business plan suitable for seed-stage investors in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -425,7 +417,7 @@ app.post("/api/dna/weekly-plan", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI Business Consultant. Generate exactly 5 tasks for this week.",
+        systemInstruction: "You are an AI Business Consultant. Generate exactly 5 tasks for this week. Write your output strictly in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -478,7 +470,7 @@ app.post("/api/dna/location-analysis", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI Location Intelligence Analyst. Provide realistic estimates based on geography and industry.",
+        systemInstruction: "You are an AI Location Intelligence Analyst. Provide realistic estimates based on geography and industry in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -518,10 +510,12 @@ app.post("/api/dna/competitors", async (req, res) => {
 
   try {
     const prompt = `
-      Perform competitor analysis for a business.
+      Perform competitor analysis for a local business startup.
       Industry: ${dna?.industry}
       Location: ${dna?.location}
       Search Query (if any): ${query || 'General competitors'}
+      
+      CRITICAL INSTRUCTION: DO NOT return generic giants or e-commerce marketplaces (e.g., Uzum, Korzinka, Makro, Havas, Wildberries) UNLESS the business is specifically trying to build an exact clone of a giant e-commerce platform. Return highly realistic, direct local competitors (e.g., specific local stores, specific specialized shops) that match the exact industry in the area.
       
       Generate 3 highly realistic competitor profiles in the area. Provide pros, cons, realistic ratings, and distance.
     `;
@@ -529,7 +523,7 @@ app.post("/api/dna/competitors", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI Competitor Intelligence tool. Provide data in JSON array of 3 competitors.",
+        systemInstruction: "You are an AI Competitor Intelligence tool. Provide data in JSON array of 3 realistic, specific, direct local competitors in the Uzbek language. Absolutely avoid generic monopolies unless specifically asked.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.ARRAY,
@@ -581,7 +575,7 @@ app.post("/api/dna/trends", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI data simulator.",
+        systemInstruction: "You are an AI data simulator. Output JSON array with labels in Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -634,7 +628,7 @@ app.post("/api/dna/overview", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI Business Dashboard generator.",
+        systemInstruction: "You are an AI Business Dashboard generator. Write all string values (like alerts, recommendations) in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -701,7 +695,7 @@ app.post("/api/dna/scenario", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an AI Scenario Simulator. Provide realistic business impact projections.",
+        systemInstruction: "You are an AI Scenario Simulator. Provide realistic business impact projections strictly in the Uzbek language.",
       }
     });
 
@@ -739,7 +733,7 @@ app.post("/api/dna/brand", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are the Creative Director at a world-class premium design agency like Pentagram or Apple. Create elegant slogans, exact visual styles, color palettes, and brand voice guidelines.",
+        systemInstruction: "You are the Creative Director at a world-class premium design agency like Pentagram or Apple. Create elegant slogans, exact visual styles, color palettes, and brand voice guidelines strictly in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -806,7 +800,7 @@ app.post("/api/dna/finance", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are an expert AI CFO. Analyze the provided monthly numbers and give a precise JSON response.",
+        systemInstruction: "You are an expert AI CFO. Analyze the provided monthly numbers and give a precise JSON response strictly in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -871,7 +865,7 @@ app.post("/api/dna/market-trends", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are a professional Uzbekistan-specific Venture Capital & Consumer Market Trends Analyst. Provide highly specific regional recommendations.",
+        systemInstruction: "You are a professional Uzbekistan-specific Venture Capital & Consumer Market Trends Analyst. Provide highly specific regional recommendations strictly in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -939,7 +933,7 @@ app.post("/api/dna/google-trends", async (req, res) => {
       model: "gemini-3.5-flash",
       contents: prompt,
       config: {
-        systemInstruction: "You are a regional SEO and Google Search Console auditor in Tashkent. Provide short, practical projections about search interest.",
+        systemInstruction: "You are a regional SEO and Google Search Console auditor in Tashkent. Provide short, practical projections about search interest strictly in the Uzbek language.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
